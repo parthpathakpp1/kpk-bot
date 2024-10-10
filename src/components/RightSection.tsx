@@ -4,12 +4,22 @@ import styles from "@/styles/RightSection.module.css";
 import chatgptlogo2 from "@/assets/chatgptlogo2.png";
 import nouserlogo from "@/assets/nouserlogo.png";
 import Image from "next/image";
-// import schoolbg from '@/assets/schoolBG.jpg'
 import { HashLoader } from "react-spinners";
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API;
-// console.log(API_KEY)
+
+interface MessagePart {
+  text: string;
+}
+
+interface Message {
+  role: "user" | "model";
+  parts: MessagePart[];
+}
+
 const RightSection = () => {
-  const trainingPrompt = [
+  
+  const trainingPrompt: Message[] = [
+    
     {
       role: "user",
       parts: [
@@ -59,53 +69,9 @@ const RightSection = () => {
       ],
     },
   ];
-  const [message, setMessage] = useState("");
-  const [isSent, setIsSent] = useState(true);
-  const [allMessages, setAllMessages] = useState<any[]>([]);
-
-  // const sendMessage = async () => {
-  //     // console.log(message)
-  //     let url = "https://api.openai.com/v1/chat/completions"
-
-  //     let token = `Bearer ${openAiAPI}`
-  //     let model = 'gpt-3.5-turbo'
-
-  //     let messagesToSend = [
-  //         ...allMessages,
-  //         {
-  //             role: 'user',
-  //             content: message
-  //         }
-  //     ]
-
-  //     let res = await fetch(url, {
-  //         method: 'POST',
-  //         headers: {
-  //             'Authorization': token,
-  //             'Content-Type': 'application/json'
-  //         },
-  //         body: JSON.stringify({
-  //             model: model,
-  //             messages: messagesToSend
-  //         })
-  //     })
-  //     let resjson = await res.json()
-  //     if (resjson) {
-  //         console.log(resjson)
-
-  //         // console.log(resjson.choices[0].message)
-
-  //         let newAllMessages = [
-  //             ...messagesToSend,
-  //             resjson.choices[0].message
-  //         ]
-
-  //         // console.log(newAllMessages)
-
-  //         setAllMessages(newAllMessages)
-  //         setMessage('')
-  //     }
-  // }
+  const [message, setMessage] = useState<string>("");
+  const [isSent, setIsSent] = useState<boolean>(true);
+  const [allMessages, setAllMessages] = useState<Message[]>([]);
 
   const sendMessage = async () => {
     const url =
@@ -137,11 +103,11 @@ const RightSection = () => {
 
     const resjson = await res.json();
     setIsSent(true);
-    // console.log(resjson.candidates[0].content.parts[0].text)
+    
 
     const responseMessage = resjson.candidates[0].content.parts[0].text;
 
-    const newAllMessages = [
+    const newAllMessages: Message[] = [
       ...allMessages,
       {
         role: "user",
